@@ -18,7 +18,7 @@ class Solr(object):
         """
         """
         json = dumps(docs)
-        url = "%s" % join(self.url, 'update')
+        url = '%s' % join(self.url, 'update')
         response = requests.post(url,
                                  json,
                                  headers={'Content-type': 'application/json' })
@@ -50,7 +50,7 @@ class Solr(object):
         else:
             return eval(response.content)
 
-    def get(self, doc_id):
+    def get(self, *params):
         """
         """
         encoded_params = urlencode([('wt', 'python')] + list(params))
@@ -66,7 +66,7 @@ class Solr(object):
         """
         url = join(self.url, 'update')
         query = map(str, query)
-        data = "<delete><query>%s</query></delete>" % ':'.join(query)
+        data = '<delete><query>%s</query></delete>' % ':'.join(query)
         response = requests.post(url,
                                  data,
                                  headers={'Content-type': 'text/xml' })

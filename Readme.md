@@ -1,6 +1,6 @@
 # Pysolr4
 
-A very beta Solr engine for Solr 4 only.
+A Python wrapper for Solr 4+.
 
 ## Installation
 
@@ -10,9 +10,12 @@ Install:
 
 ## Examples
 
-Loading data:
+Connecting:
 
     solr = Solr('http://localhost:8983/solr/core0')
+
+Loading data:
+
     solr.update( { 'id' : 1, 'name' : 'Tom' },
                  { 'id' : 2, 'name' : 'Ted' },
                  ... 
@@ -20,13 +23,31 @@ Loading data:
 
 Query:
 
-    result = solr.select(('q', '*:*'))
+    result = solr.select( ('q', '*:*') )
+
+Faceting over the "name" and "type" field:
+
+    results = solr.select( ( 'q', '*:*' ),
+                           ( 'facet', 'true' ),
+                           ( 'facet.field', 'name' ),
+                           ( 'facet.field', 'type' ) )
 
 TODO: More examples.
 
 ## Testing
 
-TODO: Show example setup.
+Setup Solr on Tomcat 6 Ubuntu 12.04
+
+    sudo apt-get install tomcat6
+    git submodule init
+    git submodule update
+    sudo dpkg -i solr4-tomcat-debian/solr4-tomcat.deb
+    sudo cp conf/schema.xml /etc/solr/collection1/conf/
+    sudo /etc/init.d/tomcat6 restart
+
+Run tests
+
+    nosetests
 
 ## Contributing
 
