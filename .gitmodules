@@ -1,3 +1,3 @@
 [submodule "solr4-tomcat-debian"]
 	path = solr4-tomcat-debian
-	url = git@github.com:zeraholladay/solr4-tomcat-debian.git
+	url = https://github.com/zeraholladay/solr4-tomcat-debian.git
