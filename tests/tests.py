@@ -31,7 +31,7 @@ class Test(object):
         eq_(len(docs), 4)
 
     def test_get(self):
-        response = self.solr.get(('id', 1))
+        response = self.solr.get(1)
         eq_(response['doc']['id'], '1')
 
     def test_delete(self):

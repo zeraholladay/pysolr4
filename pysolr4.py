@@ -53,11 +53,11 @@ class Solr(object):
         else:
             return eval(response.content)
 
-    def get(self, *params):
+    def get(self, _id):
         """
         Calls the select response handler.
         """
-        encoded_params = urlencode([('wt', 'python')] + list(params))
+        encoded_params = urlencode([('wt', 'python'), ('id', _id)])
         url = "%s?%s" % ( join(self.url, 'get'), encoded_params )
         response = requests.get(url)
         if 200 != response.status_code:
