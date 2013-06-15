@@ -48,7 +48,6 @@ class Test(object):
 
     def test_system(self):
         response = self.solr.system()
-        set_trace()
         ok_('responseHeader' in response and
             'system' in response)
 

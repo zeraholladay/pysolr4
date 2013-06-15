@@ -158,7 +158,7 @@ class Solr(object):
         return self._admin('cores')
 
     def system(self):
-                """
+        """
         Returns info about system.
         """
         return self._admin('system')
