@@ -1,6 +1,12 @@
 from nose.tools import eq_, ok_, set_trace, nottest
-from pysolr4 import Solr, SolrError
+from pysolr4 import Solr, SolrResponse, SolrError, pairwise_dict
 from uuid import uuid4
+
+class TestPairwise_dict(object):
+    def test_pairwise_dict(self):
+        eq_(pairwise_dict([]), {})
+        eq_(pairwise_dict(['a', 1, 'b', 'dog']),
+            { 'a' : 1, 'b' : 'dog' })
 
 class Test(object):
     def setUp(self):
@@ -16,28 +22,24 @@ class Test(object):
     def test_update(self):
         self.solr.update( { 'id' : 5 } ).commit()
         response = self.solr.select( ('q', '*:*') )
-        docs = response['response']['docs']
-        eq_(len(docs), 5)
+        eq_(len(response.docs), 5)
 
     def test_commit(self):
         pass
 
     def test_select(self):
         response = self.solr.select( ('q', 'id:1') )
-        docs = response['response']['docs']
-        eq_(len(docs), 1)
+        eq_(len(response.docs), 1)
         response = self.solr.select( ['q', '*:*'] )
-        docs = response['response']['docs']
-        eq_(len(docs), 4)
+        eq_(len(response.docs), 4)
 
     def test_get(self):
         response = self.solr.get(1)
-        eq_(response['doc']['id'], '1')
+        eq_(response.doc['id'], '1')
 
     def test_delete(self):
         response = self.solr.delete(( 'id', 1 )).commit().select(('q', '*:*'))
-        docs = response['response']['docs']
-        eq_(len(docs), 3)
+        eq_(len(response.docs), 3)
 
 class Test_Facet(object):
     def setUp(self):
@@ -59,9 +61,9 @@ class Test_Facet(object):
                                      ( 'rows', 0),
                                      ( 'facet', 'true' ),
                                      ( 'facet.field', 'name' ) )
-        facet_fields = response['facet_counts']['facet_fields']
+        facet_fields = response.facet_counts['facet_fields']
         names = facet_fields['name']
-        names = dict([ (names[i], names[i + 1]) for i in range(0, len(names), 2) ])
+        names = pairwise_dict(names)
         eq_(names['Mona Lisa'], 4)
         eq_(names['American Gothic'], 2)
         eq_(names['Starry Night'], 1)
@@ -72,9 +74,9 @@ class Test_Facet(object):
                                      ( 'rows', 0),
                                      ( 'facet', 'true' ),
                                      ( 'facet.field', 'type' ) )
-        facet_fields = response['facet_counts']['facet_fields']
+        facet_fields = response.facet_counts['facet_fields']
         types = facet_fields['type']
-        types = dict([ (types[i], types[i + 1]) for i in range(0, len(types), 2) ]) 
+        types = pairwise_dict(types)
         eq_(types['painting'], 8)
 
     def test_facet_name_and_type(self):
@@ -83,13 +85,12 @@ class Test_Facet(object):
                                      ( 'facet', 'true' ),
                                      ( 'facet.field', 'name' ),
                                      ( 'facet.field', 'type' ) )
-        facet_fields = response['facet_counts']['facet_fields']
-        names = facet_fields['name']
-        names = dict([ (names[i], names[i + 1]) for i in range(0, len(names), 2) ])
+        facet_fields = response.facet_counts['facet_fields']
+        names = pairwise_dict(facet_fields['name'])
         eq_(names['Mona Lisa'], 4)
         eq_(names['American Gothic'], 2)
         eq_(names['Starry Night'], 1)
         eq_(names['The Scream'], 1)
         types = facet_fields['type']
-        types = dict([ (types[i], types[i + 1]) for i in range(0, len(types), 2) ])
+        types = pairwise_dict(types)
         eq_(types['painting'], 8)

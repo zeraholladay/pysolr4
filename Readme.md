@@ -25,6 +25,10 @@ Query:
 
     result = solr.select( ('q', '*:*') )
 
+Get a record by id:
+    
+    doc = solr.get(1) # { 'id' : 1, 'name' : 'Tom' }
+
 Faceting over the "name" and "type" field:
 
     results = solr.select( ( 'q', '*:*' ),

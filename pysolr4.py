@@ -1,5 +1,6 @@
 """
 Solr 4 library for common tasks.
+See 
 """
 import requests
 from urllib import urlencode
@@ -10,11 +11,32 @@ __author__ = 'Zera Holladay'
 __all__ = ['Solr', 'SolrError']
 __version__ = (0, 0, 1)
 
+def pairwise_dict(even_list):
+    """
+    Utility function for dealing with facets.
+    [ 'a', 1, 'b', 3 ] -> { 'a' : 1, 'b' : 2 }
+    """
+    return dict(zip(even_list[::2], even_list[1::2]))
+
 class SolrError(Exception):
     """
     Exception class.
     """
     pass
+
+class SolrResponse(object):
+    """
+    Generic response container used by Solr.select and Solr.get.
+    """
+    def __init__(self, **entries):
+        """
+        The raw response is a dict.
+        Add extras for convenience.
+        """
+        self.__dict__.update(entries)
+        if (hasattr(self, 'response') and
+            'docs' in self.response):
+            self.docs = self.response['docs']
 
 class Solr(object):
     """
@@ -41,7 +63,7 @@ class Solr(object):
                                  json,
                                  headers={'Content-type': 'application/json' })
         if 200 != response.status_code:
-            raise SolrError('Update failed: %s' % url)
+            raise SolrError('Update failed: %s\n%s' % (url, response.content))
         else:
             return self
 
@@ -73,7 +95,8 @@ class Solr(object):
         if 200 != response.status_code:
             raise SolrError('Update failed: %s' % url)
         else:
-            return eval(response.content)
+            response = eval(response.content)
+            return SolrResponse(**response)
 
     def get(self, _id):
         """
@@ -86,7 +109,8 @@ class Solr(object):
         if 200 != response.status_code:
             raise SolrError('Get failed: %s' % url)
         else:
-            return eval(response.content)
+            response = eval(response.content)
+            return SolrResponse(**response)
 
     def delete(self, query):
         """
