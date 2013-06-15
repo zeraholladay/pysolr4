@@ -36,6 +36,11 @@ Faceting over the "name" and "type" field:
                            ( 'facet.field', 'name' ),
                            ( 'facet.field', 'type' ) )
 
+Info about the current Solr version:
+     
+     solr.cores()
+     solr.system()     
+
 TODO: More examples.
 
 ## Testing

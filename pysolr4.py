@@ -4,8 +4,14 @@ See
 """
 import requests
 from urllib import urlencode
-from os.path import join
+from os.path import abspath, join
+from urlparse import urlparse, urlunparse
 from json import dumps
+
+try:
+    from nose.tools import set_trace
+except ImportError:
+    pass
 
 __author__ = 'Zera Holladay'
 __all__ = ['Solr', 'SolrError']
@@ -128,3 +134,31 @@ class Solr(object):
             raise SolrError('Delete failed: %s' % url)
         else:
             return self
+
+    def _admin(self, item):
+        """
+        Calls admin interface for cores and system.
+        """
+        parse = urlparse(self.url)
+        path = abspath(join(parse.path, '../admin/'))
+        url = urlunparse( (parse.scheme,
+                           parse.netloc,
+                           path,
+                           "", "", "" ) )
+        encoded_params = urlencode( [('wt', 'python')] )
+        url = "%s?%s" % ( join(url, item),
+                          encoded_params )
+        response = requests.get(url)
+        return eval(response.content)
+
+    def cores(self):
+        """
+        Returns info about cores.
+        """
+        return self._admin('cores')
+
+    def system(self):
+                """
+        Returns info about system.
+        """
+        return self._admin('system')

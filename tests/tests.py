@@ -41,6 +41,17 @@ class Test(object):
         response = self.solr.delete(( 'id', 1 )).commit().select(('q', '*:*'))
         eq_(len(response.docs), 3)
 
+    def test_cores(self):
+        response = self.solr.cores()
+        ok_('responseHeader' in response and
+            'defaultCoreName' in response)
+
+    def test_system(self):
+        response = self.solr.system()
+        set_trace()
+        ok_('responseHeader' in response and
+            'system' in response)
+
 class Test_Facet(object):
     def setUp(self):
         self.solr = Solr('http://localhost:8080/solr/collection1')
