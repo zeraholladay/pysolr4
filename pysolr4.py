@@ -1,6 +1,5 @@
 """
 Solr 4 library for common tasks.
-See 
 """
 import requests
 from urllib import urlencode
@@ -162,3 +161,4 @@ class Solr(object):
         Returns info about system.
         """
         return self._admin('system')
+

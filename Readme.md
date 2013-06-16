@@ -6,6 +6,10 @@ A Python wrapper for Solr 4+.
 
 Install:
 
+    pip install pysolr4
+
+or
+
     python setup.py install
 
 ## Examples
